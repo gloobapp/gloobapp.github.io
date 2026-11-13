@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Babu Garden Solutions – Client details</title><meta name="robots" content="noindex">
+<style>
+*{box-sizing:border-box}body{margin:0;background:#eef7e9;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1d2a19}
+.w{max-width:520px;margin:0 auto;padding:20px 18px 40px}.logo{display:block;width:240px;max-width:72%;margin:6px auto 4px}
+.grass{display:block;width:100%;margin:6px 0 14px}
+.card{background:#fff;border:1px solid #cfe5c4;border-radius:14px;padding:20px 18px}
+h1{font-size:21px;color:#1f5a1c;margin:0 0 4px}p.s{margin:0 0 6px;color:#4a5e42;font-size:14.5px;line-height:1.5}
+label{display:block;font-size:14px;font-weight:600;color:#33452c;margin:14px 0 6px}label i{font-style:normal;color:#3f8f1f}label span{font-weight:400;color:#7a8a72}
+input{width:100%;font:inherit;font-size:16px;padding:12px;border:1px solid #cfe5c4;border-radius:10px;background:#f8fcf6;color:#1d2a19}
+input:focus{outline:2px solid #3f8f1f;border-color:#3f8f1f}input.err{border-color:#dc2626;background:#fef2f2}
+.btn{width:100%;margin-top:20px;padding:14px;border:0;border-radius:12px;background:#1f5a1c;color:#fff;font:inherit;font-size:16px;font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.6}.btn2{background:#fff;color:#1f5a1c;border:1px solid #1f5a1c}
+.msg{color:#dc2626;font-size:14px;margin-top:10px;display:none}.hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.ok{text-align:center;padding:20px 0}.ok b{display:block;font-size:22px;color:#1f5a1c;margin:8px 0}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:18px}
+.ov .card{max-width:380px;width:100%}.foot{text-align:center;font-size:12.5px;color:#6b7d63;margin-top:16px}
+</style></head><body><div class="w">
+<img class="logo" id="lg" alt="Babu Garden Solutions" style="min-height:60px">
+<img class="grass" id="gr" alt="">
+<div class="card" id="fCard">
+<h1>Your details</h1><p class="s">Please fill in your details so we can prepare your quote and invoices. Fields marked <b style="color:#3f8f1f">*</b> are required.</p>
+<form id="f" novalidate autocomplete="on">
+<label for="nome">Full name <i>*</i></label><input id="nome" name="name" autocomplete="name" maxlength="100" required>
+<label for="email">Email <i>*</i></label><input id="email" name="email" type="email" inputmode="email" autocomplete="email" maxlength="120" required>
+<label for="fone">Phone <span>(optional)</span></label><input id="fone" name="tel" type="tel" inputmode="tel" autocomplete="tel" maxlength="40" placeholder="e.g. 0412 345 678">
+<label for="bairro">Suburb <i>*</i></label><input id="bairro" name="suburb" autocomplete="address-level2" maxlength="80" placeholder="e.g. Burleigh Heads" required>
+<label for="end">Street address <span>(optional)</span></label><input id="end" name="address" autocomplete="street-address" maxlength="160" placeholder="e.g. 12 Smith St">
+<label for="abn">ABN <span>(optional, for businesses)</span></label><input id="abn" name="abn" inputmode="numeric" maxlength="20" placeholder="11 digits">
+<input class="hp" id="site" tabindex="-1" autocomplete="off" aria-hidden="true">
+<div class="msg" id="msg"></div>
+<button class="btn" id="go" type="submit">Send my details</button>
+</form></div>
+<div class="card ok" id="okCard" style="display:none"><div style="font-size:42px">🌿</div><b>Thank you!</b><p class="s">We've received your details and will be in touch soon.</p></div>
+<div class="foot">Babu Garden Solutions · Your details are only used to contact you about our services.</div>
+</div>
+<div class="ov" id="ov"><div class="card"><h1 style="font-size:18px">No phone number?</h1><p class="s">Are you sure you don't want to add a phone number? It helps us reach you faster about your job.</p>
+<button class="btn" id="addTel" type="button">Add my phone number</button><button class="btn btn2" id="semTel" type="button" style="margin-top:10px">Send without phone</button></div></div>
+<script>
+(function(){
+var API="https://script.google.com/macros/s/AKfycbzVlnZD1v1QPDk8ox7TsO1okgK_9zkPbE8eFyLVgMViqVJelqd_PpHy6J17VWYWanUs/exec";
+function $(i){return document.getElementById(i)}
+var f=$("f"),ov=$("ov");
+fetch(API,{method:"POST",body:JSON.stringify({fn:"__formimg"})}).then(function(r){return r.json()}).then(function(r){if(r.ok){$("lg").src="data:image/jpeg;base64,"+r.r.logo;$("gr").src="data:image/jpeg;base64,"+r.r.grass}}).catch(function(){});
+function v(i){return $(i).value.trim()}
+function erro(t){$("msg").textContent=t;$("msg").style.display=t?"block":"none"}
+["nome","email","bairro","abn","fone"].forEach(function(i){$(i).addEventListener("input",function(){$(i).classList.remove("err");erro("")})});
+function valida(){var bad=[];if(v("nome").length<2)bad.push("nome");if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email")))bad.push("email");if(v("bairro").length<2)bad.push("bairro");
+var a=v("abn").replace(/\s/g,"");if(a&&!/^\d{11}$/.test(a))bad.push("abn");
+bad.forEach(function(i){$(i).classList.add("err")});if(bad.length){erro(bad.indexOf("abn")>=0&&bad.length===1?"Please check your ABN (11 digits) or leave it blank.":"Please fill in the required fields.");$(bad[0]).focus();return false}return true}
+function envia(){var b=$("go");b.disabled=true;b.textContent="Sending…";
+fetch(API,{method:"POST",body:JSON.stringify({fn:"__cadastro",form:{nome:v("nome"),email:v("email"),fone:v("fone"),bairro:v("bairro"),end:v("end"),abn:v("abn"),site:$("site").value}})})
+.then(function(r){return r.json()}).then(function(r){if(!r.ok)throw new Error(r.e||"erro");$("fCard").style.display="none";$("okCard").style.display="block";window.scrollTo(0,0)})
+.catch(function(){erro("Sorry, something went wrong. Please try again in a moment.");b.disabled=false;b.textContent="Send my details"})}
+f.addEventListener("submit",function(e){e.preventDefault();if(!valida())return;if(!v("fone")){ov.style.display="flex";return}envia()});
+$("addTel").onclick=function(){ov.style.display="none";$("fone").focus()};
+$("semTel").onclick=function(){ov.style.display="none";envia()};
+})();
+</script></body></html>
