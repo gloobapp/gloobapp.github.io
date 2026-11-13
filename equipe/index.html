@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Gloob Equipe">
+<meta name="theme-color" content="#1f6f54">
+<meta name="robots" content="noindex, nofollow">
+<meta http-equiv="Cache-Control" content="no-cache">
+<title>Gloob Equipe</title>
+<style>
+  #ldr{position:fixed;inset:0;margin:0;font-family:system-ui,-apple-system,sans-serif;background:#f4f6f5;color:#1d2a25;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;z-index:99999}
+  #ldr .c{max-width:340px;width:100%;text-align:center}
+  #ldr .i{font-size:46px}
+  #ldr input,#ldr button{width:100%;box-sizing:border-box;font-size:17px;border-radius:12px;padding:13px;margin-top:12px}
+  #ldr input{border:1px solid #c9d3cf}
+  #ldr button{border:0;background:#1f6f54;color:#fff;font-weight:600}
+  #ldr .m{color:#5d6b66;font-size:15px;line-height:1.4}
+  #ldr .h{display:none}
+</style>
+</head>
+<body style="margin:0">
+<div id="ldr"><div class="c">
+  <div class="i" id="ic">⏳</div>
+  <h2 style="margin:8px 0 6px">Gloob Equipe</h2>
+  <div class="m" id="msg">Carregando…</div>
+  <div class="h" id="nm">
+    <input id="nome" maxlength="40" placeholder="Nome deste celular (ex.: iPhone do Leandro)">
+    <button type="button" id="pedir">Pedir acesso</button>
+  </div>
+  <button type="button" class="h" id="tentar">Já aprovei, tentar de novo</button>
+</div></div>
+<script>
+(function () {
+const API = "https://script.google.com/macros/s/AKfycbzVlnZD1v1QPDk8ox7TsO1okgK_9zkPbE8eFyLVgMViqVJelqd_PpHy6J17VWYWanUs/exec";
+const $ = id => document.getElementById(id);
+const PERFIL = "Leandro";
+function tok() {
+  let t = localStorage.getItem("eqTok");
+  if (!t) {
+    const b = new Uint8Array(24); crypto.getRandomValues(b);
+    t = Array.from(b, x => x.toString(16).padStart(2, "0")).join("");
+    localStorage.setItem("eqTok", t);
+  }
+  return t;
+}
+function tela(ic, msg, nome, tentar) {
+  $("ic").textContent = ic; $("msg").textContent = msg;
+  $("nm").className = nome ? "" : "h"; $("tentar").className = tentar ? "" : "h";
+}
+function mostra(html) {
+  const vai = () => { const l = document.getElementById("ldr"); if (l) l.remove(); document.open(); document.write(html); document.close(); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => setTimeout(vai, 0)); else setTimeout(vai, 0);
+}
+async function abrir() {
+  if (!localStorage.getItem("eqNome")) return tela("🔒", "Este aparelho ainda não tem acesso. Dê um nome para ele e peça acesso.", true);
+  const salvo = localStorage.getItem("eqHtml");
+  if (salvo) {
+    mostra(salvo);
+    fetch(API, {method: "POST", body: JSON.stringify({fn: "__htmlEq", perfil: PERFIL, dev: tok(), nome: localStorage.getItem("eqNome") || ""})})
+      .then(r => r.json()).then(j => {
+        if (j.ok) { if (j.r !== salvo) localStorage.setItem("eqHtml", j.r); }
+        else if (j.e === "PEND" || j.e === "DEV") { localStorage.removeItem("eqHtml"); location.reload(); }
+      }).catch(() => {});
+    return;
+  }
+  tela("⏳", "Carregando…");
+  try {
+    const r = await fetch(API, {method: "POST", body: JSON.stringify({fn: "__htmlEq", perfil: PERFIL, dev: tok(), nome: localStorage.getItem("eqNome") || ""})});
+    const j = await r.json();
+    if (j.ok) { try { localStorage.setItem("eqHtml", j.r); } catch (e) {} mostra(j.r); return; }
+    if (j.e === "PEND") {
+      if (!localStorage.getItem("eqNome")) return tela("🔒", "Este aparelho ainda não tem acesso. Dê um nome para ele e peça acesso.", true);
+      return tela("🔒", "Pedido enviado. Agora a Bea precisa aprovar este celular (" + localStorage.getItem("eqNome") + ") no Gloob, em Acessos.", false, true);
+    }
+    tela("⚠️", "Erro: " + j.e, false, true);
+  } catch (e) { tela("⚠️", "Sem conexão. Tente de novo.", false, true); }
+}
+$("pedir").onclick = () => { const n = $("nome").value.trim(); if (!n) return $("nome").focus(); localStorage.setItem("eqNome", n); abrir(); };
+$("tentar").onclick = abrir;
+abrir();
+})();
+</script>
+</body>
+</html>
