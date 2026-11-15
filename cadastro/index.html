@@ -16,9 +16,22 @@ input:focus{outline:2px solid #3f8f1f;border-color:#3f8f1f}input.err{border-colo
 .ok{text-align:center;padding:20px 0}.ok b{display:block;font-size:22px;color:#1f5a1c;margin:8px 0}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;padding:18px}
 .ov .card{max-width:380px;width:100%}.foot{text-align:center;font-size:12.5px;color:#6b7d63;margin-top:16px}
+.sec{margin-top:22px;padding-top:18px;border-top:1px dashed #cfe5c4}.sec h2{font-size:16.5px;color:#1f5a1c;margin:0 0 4px}
+.up{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:2px dashed #9cc98a;border-radius:12px;background:#f8fcf6;color:#1f5a1c;font:inherit;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px}
+.th{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.th div{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:#e3efe9}
+.th img{width:100%;height:100%;object-fit:cover;display:block}.th button{position:absolute;top:4px;right:4px;width:26px;height:26px;border-radius:50%;border:0;background:rgba(0,0,0,.6);color:#fff;font-size:16px;line-height:1;cursor:pointer}
+.cal{margin-top:10px;border:1px solid #cfe5c4;border-radius:12px;padding:10px;background:#f8fcf6}.cal .hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.cal .hd b{font-size:15px}.cal .nv{width:36px;height:36px;border-radius:10px;border:1px solid #cfe5c4;background:#fff;color:#1f5a1c;font-size:18px;cursor:pointer}.cal .nv:disabled{opacity:.35}
+.g7{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}.g7 span{font-size:11.5px;color:#7a8a72;font-weight:600;padding:4px 0}
+.g7 button{aspect-ratio:1;border:0;border-radius:10px;background:#fff;color:#1d2a19;font:inherit;font-size:14px;font-weight:600;cursor:pointer;padding:0}
+.g7 button:disabled{background:transparent;color:#b9c4b3;cursor:default;font-weight:400}.g7 button.on{background:#1f5a1c;color:#fff}
+.hrs{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}.hrs button{padding:9px 12px;border-radius:999px;border:1px solid #9cc98a;background:#fff;color:#1f5a1c;font:inherit;font-size:14px;font-weight:600;cursor:pointer}
+.hrs button.on{background:#1f5a1c;color:#fff;border-color:#1f5a1c}.hrs button:disabled{opacity:.35;text-decoration:line-through;cursor:default}
+.pick{margin-top:10px;padding:10px 12px;border-radius:10px;background:#e3f2da;color:#1f5a1c;font-size:14.5px;font-weight:600;display:none;align-items:center;justify-content:space-between;gap:8px}
+.pick button{border:0;background:none;color:#1f5a1c;text-decoration:underline;font:inherit;font-size:13.5px;cursor:pointer}
 </style></head><body><div class="w">
-<div style="min-height:120px"><img class="logo" id="lg" alt="Babu Garden Solutions" style="visibility:hidden" onload="this.style.visibility='visible'"></div>
-<img class="grass" id="gr" alt="" style="visibility:hidden" onload="this.style.visibility='visible'">
+<img class="logo" id="lg" alt="Babu Garden Solutions" style="min-height:60px">
+<img class="grass" id="gr" alt="">
 <div class="card" id="fCard">
 <h1>Your details</h1><p class="s">Please fill in your details so we can prepare your quote and invoices. Fields marked <b style="color:#3f8f1f">*</b> are required.</p>
 <form id="f" novalidate autocomplete="on">
@@ -28,11 +41,17 @@ input:focus{outline:2px solid #3f8f1f;border-color:#3f8f1f}input.err{border-colo
 <label for="bairro">Suburb <i>*</i></label><input id="bairro" name="suburb" autocomplete="address-level2" maxlength="80" placeholder="e.g. Burleigh Heads" required>
 <label for="end">Street address <span>(optional)</span></label><input id="end" name="address" autocomplete="street-address" maxlength="160" placeholder="e.g. 12 Smith St">
 <label for="abn">ABN <span>(optional, for businesses)</span></label><input id="abn" name="abn" inputmode="numeric" maxlength="20" placeholder="11 digits">
+<div class="sec"><h2>📷 Photos <span style="font-weight:400;color:#7a8a72;font-size:14px">(optional)</span></h2><p class="s">Add photos of the area you'd like us to look at (up to 6).</p>
+<input type="file" id="fotoIn" accept="image/*" multiple style="display:none"><button type="button" class="up" id="fotoBtn">＋ Add photos</button><div class="th" id="thumbs"></div></div>
+<div class="sec"><h2>📅 Book a visit <span style="font-weight:400;color:#7a8a72;font-size:14px">(optional)</span></h2><p class="s">Pick a day and time for us to come and see the job. This is a request — we'll confirm it with you.</p>
+<div class="cal"><div class="hd"><button type="button" class="nv" id="calP" aria-label="Previous month">‹</button><b id="calT"></b><button type="button" class="nv" id="calN" aria-label="Next month">›</button></div>
+<div class="g7" id="calW"></div><div class="g7" id="calD"></div><div id="hrsBox" style="display:none"><div style="font-size:14px;font-weight:600;color:#33452c;margin-top:12px" id="hrsT"></div><div class="hrs" id="hrs"></div></div></div>
+<div class="pick" id="pick"><span id="pickT"></span><button type="button" id="pickX">Clear</button></div></div>
 <input class="hp" id="site" tabindex="-1" autocomplete="off" aria-hidden="true">
 <div class="msg" id="msg"></div>
 <button class="btn" id="go" type="submit">Send my details</button>
 </form></div>
-<div class="card ok" id="okCard" style="display:none"><div style="font-size:42px">🌿</div><b>Thank you!</b><p class="s">We've received your details and will be in touch soon.</p></div>
+<div class="card ok" id="okCard" style="display:none"><div style="font-size:42px">🌿</div><b>Thank you!</b><p class="s" id="okTxt">We've received your details and will be in touch soon.</p></div>
 <div class="foot">Babu Garden Solutions · Your details are only used to contact you about our services.</div>
 </div>
 <div class="ov" id="ov"><div class="card"><h1 style="font-size:18px">No phone number?</h1><p class="s">Are you sure you don't want to add a phone number? It helps us reach you faster about your job.</p>
@@ -43,15 +62,47 @@ var API="https://script.google.com/macros/s/AKfycbzVlnZD1v1QPDk8ox7TsO1okgK_9zkP
 function $(i){return document.getElementById(i)}
 var f=$("f"),ov=$("ov");
 fetch(API,{method:"POST",body:JSON.stringify({fn:"__formimg"})}).then(function(r){return r.json()}).then(function(r){if(r.ok){$("lg").src="data:image/jpeg;base64,"+r.r.logo;$("gr").src="data:image/jpeg;base64,"+r.r.grass}}).catch(function(){});
+
+var FOT=[],VIS=null,SL={hoje:null,horas:["07:00","08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00"],ocupado:{}},calM=null;
+var MES=["January","February","March","April","May","June","July","August","September","October","November","December"],DS=["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function pad(n){return(n<10?"0":"")+n}
+function isoD(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function pIso(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2])}
+function addD(s,n){var d=pIso(s);d.setDate(d.getDate()+n);return isoD(d)}
+function hoje(){return SL.hoje||isoD(new Date())}
+function hTxt(h){var x=+h.slice(0,2);return(x%12||12)+(h.slice(3)!=="00"?":"+h.slice(3):"")+(x<12?" am":" pm")}
+function dTxt(s){var d=pIso(s);return DS[d.getDay()]+" "+d.getDate()+" "+MES[d.getMonth()].slice(0,3)}
+fetch(API,{method:"POST",body:JSON.stringify({fn:"__cadSlots"})}).then(function(r){return r.json()}).then(function(r){if(r.ok){SL=r.r;calM=null;cal()}}).catch(function(){});
+$("calW").innerHTML=["Mo","Tu","We","Th","Fr","Sa","Su"].map(function(x){return"<span>"+x+"</span>"}).join("");
+function cal(){var h=hoje();if(!calM)calM=h.slice(0,7);var y=+calM.slice(0,4),mo=+calM.slice(5,7)-1,first=new Date(y,mo,1),dias=new Date(y,mo+1,0).getDate(),off=(first.getDay()+6)%7,max=addD(h,60);
+  $("calT").textContent=MES[mo]+" "+y;$("calP").disabled=calM<=h.slice(0,7);$("calN").disabled=calM>=max.slice(0,7);
+  var out="";for(var i=0;i<off;i++)out+="<span></span>";
+  for(var d=1;d<=dias;d++){var s=y+"-"+pad(mo+1)+"-"+pad(d),dw=new Date(y,mo,d).getDay(),ok=s>h&&s<=max&&dw!==0;out+='<button type="button" data-d="'+s+'"'+(ok?"":" disabled")+(VIS&&VIS.data===s?' class="on"':(VIS===null&&SEL===s?' class="on"':""))+">"+d+"</button>"}
+  $("calD").innerHTML=out}
+var SEL=null;
+function horas(){if(!SEL){$("hrsBox").style.display="none";return}var oc=SL.ocupado[SEL]||[];$("hrsT").textContent="Available times on "+dTxt(SEL);
+  $("hrs").innerHTML=SL.horas.map(function(x){return'<button type="button" data-h="'+x+'"'+(oc.indexOf(x)>=0?" disabled":"")+(VIS&&VIS.data===SEL&&VIS.hora===x?' class="on"':"")+">"+hTxt(x)+"</button>"}).join("");$("hrsBox").style.display="block"}
+function pick(){if(VIS){$("pickT").textContent="✓ Visit request: "+dTxt(VIS.data)+", "+hTxt(VIS.hora);$("pick").style.display="flex"}else $("pick").style.display="none"}
+$("calD").onclick=function(e){var b=e.target.closest("[data-d]");if(!b||b.disabled)return;SEL=b.dataset.d;if(VIS&&VIS.data!==SEL)VIS=null;cal();horas();pick()};
+$("hrs").onclick=function(e){var b=e.target.closest("[data-h]");if(!b||b.disabled)return;VIS={data:SEL,hora:b.dataset.h};horas();pick();cal()};
+$("pickX").onclick=function(){VIS=null;SEL=null;cal();horas();pick()};
+function mv(n){var y=+calM.slice(0,4),m=+calM.slice(5,7)-1+n,d=new Date(y,m,1);calM=d.getFullYear()+"-"+pad(d.getMonth()+1);cal()}
+$("calP").onclick=function(){mv(-1)};$("calN").onclick=function(){mv(1)};cal();
+function thumbs(){$("thumbs").innerHTML=FOT.map(function(f,i){return'<div><img src="data:image/jpeg;base64,'+f+'" alt="Photo '+(i+1)+'"><button type="button" data-x="'+i+'" aria-label="Remove photo">×</button></div>'}).join("");$("fotoBtn").style.display=FOT.length>=6?"none":"flex";$("fotoBtn").textContent=FOT.length?"＋ Add more photos":"＋ Add photos"}
+$("thumbs").onclick=function(e){var b=e.target.closest("[data-x]");if(!b)return;FOT.splice(+b.dataset.x,1);thumbs()};
+$("fotoBtn").onclick=function(){$("fotoIn").click()};
+function comprime(file){return new Promise(function(res){var u=URL.createObjectURL(file),im=new Image();im.onload=function(){var M=1400,w=im.naturalWidth,h=im.naturalHeight,k=Math.min(1,M/Math.max(w,h)),c=document.createElement("canvas");c.width=Math.round(w*k);c.height=Math.round(h*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL("image/jpeg",.8).split(",")[1])};im.onerror=function(){URL.revokeObjectURL(u);res(null)};im.src=u})}
+$("fotoIn").onchange=function(e){var fs=[].slice.call(e.target.files||[]).slice(0,6-FOT.length);e.target.value="";$("fotoBtn").textContent="Adding…";
+  Promise.all(fs.map(comprime)).then(function(l){l.forEach(function(x){if(x&&FOT.length<6)FOT.push(x)});thumbs()})};
 function v(i){return $(i).value.trim()}
 function erro(t){$("msg").textContent=t;$("msg").style.display=t?"block":"none"}
 ["nome","email","bairro","abn","fone"].forEach(function(i){$(i).addEventListener("input",function(){$(i).classList.remove("err");erro("")})});
 function valida(){var bad=[];if(v("nome").length<2)bad.push("nome");if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v("email")))bad.push("email");if(v("bairro").length<2)bad.push("bairro");
 var a=v("abn").replace(/\s/g,"");if(a&&!/^\d{11}$/.test(a))bad.push("abn");
 bad.forEach(function(i){$(i).classList.add("err")});if(bad.length){erro(bad.indexOf("abn")>=0&&bad.length===1?"Please check your ABN (11 digits) or leave it blank.":"Please fill in the required fields.");$(bad[0]).focus();return false}return true}
-function envia(){var b=$("go");b.disabled=true;b.textContent="Sending…";
-fetch(API,{method:"POST",body:JSON.stringify({fn:"__cadastro",form:{nome:v("nome"),email:v("email"),fone:v("fone"),bairro:v("bairro"),end:v("end"),abn:v("abn"),site:$("site").value}})})
-.then(function(r){return r.json()}).then(function(r){if(!r.ok)throw new Error(r.e||"erro");$("fCard").style.display="none";$("okCard").style.display="block";window.scrollTo(0,0)})
+function envia(){var b=$("go");b.disabled=true;b.textContent=FOT.length?"Sending… (uploading photos)":"Sending…";
+fetch(API,{method:"POST",body:JSON.stringify({fn:"__cadastro",form:{nome:v("nome"),email:v("email"),fone:v("fone"),bairro:v("bairro"),end:v("end"),abn:v("abn"),site:$("site").value,visita:VIS,fotos:FOT}})})
+.then(function(r){return r.json()}).then(function(r){if(!r.ok)throw new Error(r.e||"erro");if(VIS)$("okTxt").textContent="We've received your details and your visit request for "+dTxt(VIS.data)+" at "+hTxt(VIS.hora)+". We'll confirm the visit with you soon.";$("fCard").style.display="none";$("okCard").style.display="block";window.scrollTo(0,0)})
 .catch(function(){erro("Sorry, something went wrong. Please try again in a moment.");b.disabled=false;b.textContent="Send my details"})}
 f.addEventListener("submit",function(e){e.preventDefault();if(!valida())return;if(!v("fone")){ov.style.display="flex";return}envia()});
 $("addTel").onclick=function(){ov.style.display="none";$("fone").focus()};
